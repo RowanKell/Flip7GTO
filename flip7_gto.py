@@ -322,6 +322,7 @@ class GameSession:
         self.deck = Flip7Deck()
         self.hand = PlayerHand()
         self.analyzer = GTOAnalyzer(self.deck, self.hand)
+        self.opponent_cards = []  # Track opponent cards for display
 
     def print_welcome(self):
         """Print welcome message."""
@@ -331,14 +332,21 @@ class GameSession:
         print("\nThis program helps you make optimal decisions in Flip 7.")
         print("Track your cards and the analyzer will tell you whether to HIT or STAY.")
         print("\nCommands:")
-        print("  - Enter a number (0-12) to add a number card to your hand")
-        print("  - Enter '+X' (e.g., +5) to add a modifier card")
-        print("  - Enter 'x2' to add a x2 multiplier")
-        print("  - Enter 'sc' or 'second chance' to add Second Chance card")
-        print("  - Enter 'recommend' or 'r' to get the optimal play recommendation")
-        print("  - Enter 'status' or 's' to see current game state")
-        print("  - Enter 'shuffle' or 'reset' to reset for a new round")
-        print("  - Enter 'quit' or 'q' to exit")
+        print("  YOUR CARDS:")
+        print("    - Enter a number (0-12) to add a number card to your hand")
+        print("    - Enter '+X' (e.g., +5) to add a modifier card")
+        print("    - Enter 'x2' to add a x2 multiplier")
+        print("    - Enter 'sc' or 'second chance' to add Second Chance card")
+        print("  OPPONENT CARDS (improves accuracy):")
+        print("    - Enter 'o NUMBER' (e.g., 'o 9') to track opponent's number card")
+        print("    - Enter 'o +X' (e.g., 'o +5') to track opponent's modifier")
+        print("    - Enter 'o x2' to track opponent's x2 multiplier")
+        print("    - Enter 'o sc' to track opponent's Second Chance")
+        print("  ACTIONS:")
+        print("    - Enter 'recommend' or 'r' to get the optimal play recommendation")
+        print("    - Enter 'status' or 's' to see current game state")
+        print("    - Enter 'shuffle' or 'reset' to reset for a new round")
+        print("    - Enter 'quit' or 'q' to exit")
         print("="*60 + "\n")
 
     def print_status(self):
@@ -353,6 +361,11 @@ class GameSession:
         print(f"  - Modifiers: {self.hand.modifiers}")
         print(f"  - Has x2: {self.hand.has_multiplier}")
         print(f"Second Chance: {'Yes' if self.hand.has_second_chance else 'No'}")
+
+        # Show opponent cards if any
+        if self.opponent_cards:
+            print(f"\nOpponent cards tracked: {', '.join(self.opponent_cards)}")
+
         print(f"\nCards remaining in deck: {self.deck.total_remaining_cards()}")
 
         # Show safe cards
@@ -380,6 +393,7 @@ class GameSession:
         elif user_input in ['shuffle', 'reset', 'new', 'restart']:
             self.deck.reset()
             self.hand.reset()
+            self.opponent_cards.clear()
             print("\n✓ Deck shuffled! Starting new round.")
             return True
 
@@ -396,6 +410,49 @@ class GameSession:
 
         elif user_input in ['help', 'h', '?']:
             self.print_welcome()
+            return True
+
+        # Handle opponent card tracking
+        elif user_input.startswith('o ') or user_input.startswith('opponent '):
+            # Extract the card part
+            if user_input.startswith('o '):
+                card_input = user_input[2:].strip()
+            else:
+                card_input = user_input[9:].strip()
+
+            # Parse opponent's card
+            if card_input.startswith('+'):
+                # Opponent modifier card
+                try:
+                    value = int(card_input[1:])
+                    if 2 <= value <= 10:
+                        self.deck.remove_card('modifier', f'+{value}')
+                        self.opponent_cards.append(f'+{value}')
+                        print(f"✓ Tracked opponent card: +{value}")
+                    else:
+                        print("⚠ Invalid modifier. Use +2 through +10")
+                except ValueError:
+                    print("⚠ Invalid modifier format. Example: o +5")
+            elif card_input == 'x2':
+                self.deck.remove_card('modifier', 'x2')
+                self.opponent_cards.append('x2')
+                print("✓ Tracked opponent card: x2")
+            elif card_input in ['sc', 'secondchance', 'second chance', 'second_chance']:
+                self.deck.remove_card('action', 'Second Chance')
+                self.opponent_cards.append('SC')
+                print("✓ Tracked opponent card: Second Chance")
+            else:
+                # Try to parse as number card
+                try:
+                    num = int(card_input)
+                    if 0 <= num <= 12:
+                        self.deck.remove_card('number', num)
+                        self.opponent_cards.append(str(num))
+                        print(f"✓ Tracked opponent card: {num}")
+                    else:
+                        print("⚠ Invalid number. Use 0-12")
+                except ValueError:
+                    print(f"⚠ Unknown opponent card: '{card_input}'")
             return True
 
         # Parse card input
