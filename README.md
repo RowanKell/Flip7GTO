@@ -53,6 +53,14 @@ The program accepts the following inputs:
 - `x2` - Add a x2 multiplier card
 - `sc` or `second chance` - Add a Second Chance card
 
+#### Tracking Opponent Cards (Improves Accuracy!)
+- `o NUMBER` - Track opponent's number card (e.g., `o 9` tracks their 9)
+- `o +X` - Track opponent's modifier (e.g., `o +5`)
+- `o x2` - Track opponent's x2 multiplier
+- `o sc` - Track opponent's Second Chance card
+
+**Why track opponent cards?** This removes them from the deck calculations, giving you more accurate bust probabilities without affecting your hand or score!
+
 #### Getting Recommendations
 - `recommend` or `r` - Get the GTO recommendation (HIT or STAY)
 - `status` or `s` - View current game state and probabilities
@@ -67,6 +75,12 @@ The program accepts the following inputs:
 ```
 Enter command or card: 9
 ✓ Added number card: 9
+
+Enter command or card: o 7
+✓ Tracked opponent card: 7
+
+Enter command or card: o 8
+✓ Tracked opponent card: 8
 
 Enter command or card: 10
 ✓ Added number card: 10
@@ -205,23 +219,44 @@ This is the most important metric:
 
 ## Strategy Tips
 
-1. **Track cards carefully** - The analyzer is only as good as your input
-2. **Trust the math** - GTO strategy may feel counterintuitive but it's optimal
-3. **Second Chance changes everything** - Be much more aggressive with it
-4. **6-card decision** - The 7-card bonus is usually worth pursuing with Second Chance
-5. **Low scores** - Don't stay on scores below 25-30 unless bust risk is extreme
-6. **Position matters** - If others have busted, you can be more conservative
+1. **Track opponent cards** - Use `o NUMBER` to track visible opponent cards for better accuracy
+2. **Track cards carefully** - The analyzer is only as good as your input
+3. **Trust the math** - GTO strategy may feel counterintuitive but it's optimal
+4. **Second Chance changes everything** - Be much more aggressive with it
+5. **6-card decision** - The 7-card bonus is usually worth pursuing with Second Chance
+6. **Low scores** - Don't stay on scores below 25-30 unless bust risk is extreme
+7. **Position matters** - If others have busted, you can be more conservative
 
 ## Advanced Usage
 
 ### Tracking Other Players' Cards
 
-While the program tracks YOUR hand, you can also mentally note cards that other players have shown. This improves your probability calculations:
+The program now has **built-in opponent card tracking** that significantly improves accuracy in multi-player games:
 
-1. When other players draw cards, remember which numbers they show
-2. This removes those cards from the available pool
-3. Reduces uncertainty about the deck composition
-4. Makes your bust probability calculations more accurate
+**How it works:**
+```
+# Track opponent's visible cards
+Enter command or card: o 7    # Opponent has a 7
+✓ Tracked opponent card: 7
+
+Enter command or card: o 12   # Opponent has a 12
+✓ Tracked opponent card: 12
+
+Enter command or card: o +5   # Opponent has a +5 modifier
+✓ Tracked opponent card: +5
+```
+
+**Benefits:**
+1. Removes opponent cards from deck calculations (more accurate probabilities)
+2. Does NOT affect your hand or score (only tracks what's visible)
+3. Shown in status display for reference
+4. Significantly improves bust probability accuracy
+
+**Best practices:**
+- Track all visible number cards from active opponents
+- Don't worry about tracking every modifier/action card (less impact)
+- Reset with `shuffle` when starting a new round
+- Focus on cards from players still in the round
 
 ### Optimal Thresholds by Card Count
 
