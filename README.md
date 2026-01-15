@@ -66,12 +66,14 @@ The program accepts the following inputs:
 - `status` or `s` - View current game state and probabilities
 
 #### Managing the Game
-- `shuffle` - Shuffle the deck (keeps your hand and opponent cards - use when deck runs low mid-game)
-- `new` or `round` - Start a new round (resets deck, hand, and opponent tracking)
+- `shuffle` - Shuffle the deck back to full (96 cards) - use when deck runs low
+- `new` or `round` - Start a new round (clears hands, keeps deck state)
 - `help` or `h` - Show help message
 - `quit` or `q` - Exit the program
 
-**Important:** Use `shuffle` when the deck needs reshuffling mid-game but you're still playing your hand. Use `new` when the round ends and everyone starts fresh.
+**Important:**
+- Use `shuffle` when the deck runs out of cards (resets deck to 96)
+- Use `new` when a round ends (clears your hand and opponent tracking, but deck continues from current state)
 
 ### Example Session
 
@@ -237,16 +239,16 @@ This is the most important metric:
 The program distinguishes between two different game events:
 
 **Shuffle (`shuffle` command):**
-- Only resets the deck to 96 cards
+- Resets the deck to full 96 cards
 - Keeps your current hand
 - Keeps opponent card tracking
-- Use this when: The deck runs low mid-round and needs reshuffling
+- Use this when: The deck runs out of cards and needs reshuffling
 
 **New Round (`new` or `round` command):**
-- Resets the deck to 96 cards
 - Clears your hand
 - Clears opponent card tracking
-- Use this when: The round ends (someone busted, stayed, or got 7 cards)
+- **Keeps the deck state** (doesn't reshuffle)
+- Use this when: The round ends and players start new hands
 
 **Example scenario:**
 ```
@@ -255,17 +257,20 @@ Enter command or card: 10
 Enter command or card: 11
 Enter command or card: 12
 
-# Deck is running low, dealer shuffles discards back in
+# Deck runs out, dealer shuffles
 Enter command or card: shuffle
 ✓ Deck shuffled! (Your hand and opponent cards remain)
 
 # You continue playing
 Enter command or card: 9
 
-# Round ends, you choose to stay
-# Now start fresh for the next round
+# Round ends, you choose to stay with 4 cards
+# Everyone starts new hands for the next round
 Enter command or card: new
-✓ New round started! (Deck, hand, and opponent tracking reset)
+✓ New round started! (Hand and opponent tracking reset, deck continues)
+
+# Deck still has same cards remaining from before
+# Only your hand is cleared
 ```
 
 ### Tracking Other Players' Cards
@@ -294,7 +299,8 @@ Enter command or card: o +5   # Opponent has a +5 modifier
 **Best practices:**
 - Track all visible number cards from active opponents
 - Don't worry about tracking every modifier/action card (less impact)
-- Reset with `shuffle` when starting a new round
+- Use `new` when starting a new round (clears tracking)
+- Use `shuffle` only when the deck actually gets reshuffled
 - Focus on cards from players still in the round
 
 ### Optimal Thresholds by Card Count

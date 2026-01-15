@@ -397,10 +397,9 @@ class GameSession:
             return True
 
         elif user_input in ['new', 'round', 'reset', 'restart']:
-            self.deck.reset()
             self.hand.reset()
             self.opponent_cards.clear()
-            print("\n✓ New round started! (Deck, hand, and opponent tracking reset)")
+            print("\n✓ New round started! (Hand and opponent tracking reset, deck continues)")
             return True
 
         elif user_input in ['status', 's', 'state']:
