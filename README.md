@@ -66,9 +66,12 @@ The program accepts the following inputs:
 - `status` or `s` - View current game state and probabilities
 
 #### Managing the Game
-- `shuffle` or `reset` - Reset for a new round (shuffle the deck)
+- `shuffle` - Shuffle the deck (keeps your hand and opponent cards - use when deck runs low mid-game)
+- `new` or `round` - Start a new round (resets deck, hand, and opponent tracking)
 - `help` or `h` - Show help message
 - `quit` or `q` - Exit the program
+
+**Important:** Use `shuffle` when the deck needs reshuffling mid-game but you're still playing your hand. Use `new` when the round ends and everyone starts fresh.
 
 ### Example Session
 
@@ -228,6 +231,42 @@ This is the most important metric:
 7. **Position matters** - If others have busted, you can be more conservative
 
 ## Advanced Usage
+
+### Understanding Shuffle vs New Round
+
+The program distinguishes between two different game events:
+
+**Shuffle (`shuffle` command):**
+- Only resets the deck to 96 cards
+- Keeps your current hand
+- Keeps opponent card tracking
+- Use this when: The deck runs low mid-round and needs reshuffling
+
+**New Round (`new` or `round` command):**
+- Resets the deck to 96 cards
+- Clears your hand
+- Clears opponent card tracking
+- Use this when: The round ends (someone busted, stayed, or got 7 cards)
+
+**Example scenario:**
+```
+# You're playing your turn
+Enter command or card: 10
+Enter command or card: 11
+Enter command or card: 12
+
+# Deck is running low, dealer shuffles discards back in
+Enter command or card: shuffle
+✓ Deck shuffled! (Your hand and opponent cards remain)
+
+# You continue playing
+Enter command or card: 9
+
+# Round ends, you choose to stay
+# Now start fresh for the next round
+Enter command or card: new
+✓ New round started! (Deck, hand, and opponent tracking reset)
+```
 
 ### Tracking Other Players' Cards
 

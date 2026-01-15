@@ -345,7 +345,8 @@ class GameSession:
         print("  ACTIONS:")
         print("    - Enter 'recommend' or 'r' to get the optimal play recommendation")
         print("    - Enter 'status' or 's' to see current game state")
-        print("    - Enter 'shuffle' or 'reset' to reset for a new round")
+        print("    - Enter 'shuffle' to shuffle the deck (keeps your hand)")
+        print("    - Enter 'new' or 'round' to start a new round (resets everything)")
         print("    - Enter 'quit' or 'q' to exit")
         print("="*60 + "\n")
 
@@ -390,11 +391,16 @@ class GameSession:
             print("\nThanks for using Flip 7 GTO Analyzer!")
             return False
 
-        elif user_input in ['shuffle', 'reset', 'new', 'restart']:
+        elif user_input == 'shuffle':
+            self.deck.reset()
+            print("\n✓ Deck shuffled! (Your hand and opponent cards remain)")
+            return True
+
+        elif user_input in ['new', 'round', 'reset', 'restart']:
             self.deck.reset()
             self.hand.reset()
             self.opponent_cards.clear()
-            print("\n✓ Deck shuffled! Starting new round.")
+            print("\n✓ New round started! (Deck, hand, and opponent tracking reset)")
             return True
 
         elif user_input in ['status', 's', 'state']:
@@ -492,7 +498,7 @@ class GameSession:
                         confirm = input("Are you sure you want to add this (bust)? (yes/no): ").strip().lower()
                         if confirm in ['yes', 'y']:
                             print("\n💥 BUST! You scored 0 points this round.")
-                            print("Type 'shuffle' to start a new round.")
+                            print("Type 'new' to start a new round, or 'shuffle' if the deck needs reshuffling.")
                     else:
                         self.hand.add_number(num)
                         self.deck.remove_card('number', num)
@@ -505,7 +511,7 @@ class GameSession:
                             print("SEVEN UNIQUE CARDS - INSTANT ROUND WIN!")
                             print(f"Final score: {bonus_score} points (+15 bonus)")
                             print("🎉"*20)
-                            print("\nType 'shuffle' to start a new round.")
+                            print("\nType 'new' to start a new round.")
                 else:
                     print("⚠ Invalid number. Use 0-12")
             except ValueError:
